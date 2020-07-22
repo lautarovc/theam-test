@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.urls import path
+from .views import *
 
 urlpatterns = [
 	path('', include('rest_framework.urls')),
 	path('oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+	path('users/', UserViewSet.as_view({'get':'list'})),
 ]
