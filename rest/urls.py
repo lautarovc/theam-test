@@ -20,5 +20,6 @@ from .views import *
 urlpatterns = [
 	path('', include('rest_framework.urls')),
 	path('oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-	path('users/', UserViewSet.as_view({'get':'list'})),
+    path('users/', UserViewSet.as_view({'get':'list', 'post':'create'})),
+	path('users/<int:pk>/', UserViewSet.as_view({'get':'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})),
 ]
