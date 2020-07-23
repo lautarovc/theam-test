@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -156,3 +157,6 @@ OAUTH2_PROVIDER = {
 #GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.environ.get('DRIVE_FILE','')
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = None
 GOOGLE_DRIVE_STORAGE_MEDIA_ROOT = 'media'
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
