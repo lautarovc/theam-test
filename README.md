@@ -1,6 +1,6 @@
 # theam-test
 
-## Getting Started
+# Getting Started
 The requirements.txt file contains all the Python3 packages needed to run the project.
 
 The following Environment Variables need to be defined:
@@ -12,7 +12,7 @@ The following Environment Variables need to be defined:
 
 <p>The project is already configured to run on a PostgreSQL database called "theam-test" with the user "theam-test" running on localhost. This can be changed in the settings.py file inside the theamTest folder.</p>
 
-## Local Installation
+# Local Installation
 * Inside the project's folder run:
     >pip3 install -r requirements.txt
 * Create the database "theam-test" with owner "theam-test" on your local PostgreSQL manager.
@@ -23,12 +23,15 @@ The following Environment Variables need to be defined:
 * Run the server on the default address and port (127.0.0.1:8000):
     >python3 manage.py runserver
 
-## API Endpoints
-### Getting the Client Id and Client Secret key
-You can register and manage an application to obtain the client id and client secret key by entering to the _/rest/oauth/applications/_ module through the browser.
+# API Endpoints
+## Getting the Client Id and Client Secret key
+### Endpoint: /rest/oauth/applications/
+You can register and manage an application to obtain the client id and client secret key by entering to the _/rest/oauth/applications/_ module through the **browser**.
 
-### OAuth
-You can obtain an access token by making a POST call to the _/rest/oauth/token/_ endpoint with the client id and client secret key, and the following data:
+
+## OAuth
+### Endpoint: /rest/oauth/token/
+You can obtain an access token by making a **POST** request to the _/rest/oauth/token/_ endpoint with the client id and client secret key, and the following data:
 
 * grant_type=password
 * username=[any username]
@@ -40,21 +43,38 @@ For example, with CURL:
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
-### User Management
+
+## Headers
+**Content-Type:** All the endpoints below are compatible with the _application/json_ and _multipart/form-data_ media types. For uploading photos, always use _multipart/form-data_. For GET requests, you can omit this header.
+
+**Authorization:** All the following endpoints can only be accessed by having this header, which must include the Access Token of the current user, written in the following syntax: _Bearer [ACCESS TOKEN]_
+
+
+## User Management
 Only a user that has the _is_staff_ attribute as true can List, Get, Create, Edit, Update and Delete users. The superuser by default can do this.
 
-All the following endpoints can only be accessed by having the current user's Access Token in the header, in CURL:
->-H "Authorization: Bearer [ACCESS TOKEN]"
-
-#### List Users
-To list all users, you can make a GET call to the _/rest/users/_ endpoint, in CURL:
+**The User object:**
+```
+{
+    "id": <auto int>,
+    "username": <str>,
+    "first_name": <str>,
+    "last_name": <str>,
+    "email": <str>,
+    "is_staff": <bool>
+}
+```
+### Endpoint: /rest/users/
+#### List Users (GET)
+To list all users, you can make a **GET** request to the _/rest/users/_ endpoint, in CURL:
 
 >curl -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/users/
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
-#### Create User
-To create a user, you can make a POST call to the _/rest/users/_ endpoint with the following data:
+
+#### Create User (POST)
+To create a user, you can make a **POST** request to the _/rest/users/_ endpoint with the following data:
 
 * username=[any username]
 * first_name=[user's name]
@@ -69,15 +89,17 @@ For example, with CURL:
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
-#### Get User
-To get a specific user, you can make a GET call to the _/rest/users/[USER ID]/_ endpoint, in CURL:
+### Endpoint: /rest/users/[USER ID]/
+#### Get User (GET)
+To get a specific user, you can make a **GET** request to the _/rest/users/[USER ID]/_ endpoint, in CURL:
 
 >curl -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/users/[USER ID]/
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
-#### Edit User
-To edit all of a user's data, you can make a PUT call to the _/rest/users/[USER ID]/_ endpoint with the following data:
+
+#### Edit User (PUT)
+To edit all of a user's data, you can make a **PUT** request to the _/rest/users/[USER ID]/_ endpoint with the following data:
 
 * username=[any username]
 * first_name=[user's name]
@@ -92,8 +114,9 @@ For example, with CURL:
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
-#### Update User Attribute
-To update one or more attributes from a user, you can make a PATCH call to the _/rest/users/[USER ID]/_ endpoint with any of the following variables as data:
+
+#### Update User Attribute (PATCH)
+To update one or more attributes from a user, you can make a **PATCH** request to the _/rest/users/[USER ID]/_ endpoint with any of the following variables as data:
 
 * username=[any username]
 * first_name=[user's name]
@@ -108,10 +131,112 @@ For example, with CURL:
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
-#### Delete User
-To delete a user, you can make a DELETE call to the _/rest/users/[USER ID]/_ endpoint, in CURL:
+
+#### Delete User (DELETE)
+To delete a user, you can make a **DELETE** request to the _/rest/users/[USER ID]/_ endpoint, in CURL:
 
 >curl -X DELETE -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/users/[USER ID]/
+
+**--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
+
+### Customer Management
+All users can List, Get, Create, Edit, Update and Delete customers.
+
+**The Customer object:**
+```
+{
+    "id": <str>,
+    "name": <str>,
+    "surname": <str>,
+    "photo": <URL>,
+    "createdBy": <int>,
+    "lastUpdatedBy": <int>
+}
+```
+
+### Endpoint: /rest/customers/
+#### List Customers (GET)
+To list all customers, you can make a **GET** request to the _/rest/customers/_ endpoint, in CURL:
+
+>curl -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/
+
+**--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
+
+
+#### Create Customers (POST)
+To create a customer, you can make a **POST** request to the _/rest/customers/_ endpoint with the following data:
+
+**Required**
+* id=[customer's id]
+* name=[customer's name]
+* surname=[customer's surname]
+**Optional**
+* photo=@[URL/Path to photo]
+
+For example, with CURL:
+
+>curl -X POST -d '{"id":"1234", "name":"name1", "surname":"name1"}' -H "Content-Type: application/json" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/
+
+Or, with the photo attribute:
+
+>curl -X POST -F id=1234 -F name=name1 -F surname=name1 -F photo=@/path/to/photo.jpg -H "Content-Type: multipart/form-data" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/
+
+**--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
+
+
+### Endpoint: /rest/customers/[CUSTOMER ID]/
+#### Get Customer (GET)
+To get a specific customer, you can make a **GET** request to the _/rest/customers/[CUSTOMER ID]/_ endpoint, in CURL:
+
+>curl -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/[CUSTOMER ID]/
+
+**--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
+
+
+#### Edit Customer (PUT)
+To edit all of a customer's data, you can make a **PUT** request to the _/rest/customers/[CUSTOMER ID]/_ endpoint with the following data:
+
+**Required**
+* id=[customer's id]
+* name=[customer's name]
+* surname=[customer's surname]
+**Optional (note that if it's not included, it will be replaced by null**
+* photo=@[URL/Path to photo]
+
+For example, with CURL:
+
+>curl -X PUT -d '{"id":"1234", "name":"name1", "surname":"name1"}' -H "Content-Type: application/json" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/[CUSTOMER ID]/
+
+Or, with the photo attribute:
+
+>curl -X PUT -F id=1234 -F name=name1 -F surname=name1 -F photo=@/path/to/photo.jpg -H "Content-Type: multipart/form-data" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/[CUSTOMER ID]/
+
+**--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
+
+
+#### Update Customer Attribute (PATCH)
+To update one or more attributes from a customer, you can make a **PATCH** request to the _/rest/customers/[CUSTOMER_ID]/_ endpoint with any of the following variables as data:
+
+* id=[customer's id]
+* name=[customer's name]
+* surname=[customer's surname]
+* photo=@[URL/Path to photo]
+
+For example, with CURL:
+
+>curl -X PATCH -d '{"name":"name1","surname":"name1"}' -H "Content-Type: application/json" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/[CUSTOMER ID]/
+
+Or, with the photo attribute:
+
+>curl -X PATCH -F photo=@path/to/photo.jpg -H "Content-Type: multipart/form-data" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/[CUSTOMER ID]/
+
+**--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
+
+
+#### Delete Customer (DELETE)
+To delete a customer, you can make a **DELETE** request to the _/rest/customers/[CUSTOMER ID]/_ endpoint, in CURL:
+
+>curl -X DELETE -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/customers/[CUSTOMER ID]/
 
 **--INSERT TABLE WITH ALL POSSIBLE OUTPUTS--**
 
