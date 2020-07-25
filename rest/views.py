@@ -12,6 +12,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     Endpoint for listing and editing users, only staff/admin accessible.
     """
+    parser_classes = (MultiPartParser, FormParser, JSONParser,)
     permission_classes = [permissions.IsAdminUser, TokenHasReadWriteScope]
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
