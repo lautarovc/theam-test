@@ -71,6 +71,8 @@ For example, with CURL:
 ## User Management
 Only a user that has the _is_staff_ attribute as true can List, Get, Create, Edit, Update and Delete users. The superuser by default can do this.
 
+**Note:** Users can't be deleted, they can only be deactivated, you can always reactivate a user with the Update (PATCH) endpoint.
+
 **The User object:**
 ```
 {
@@ -79,7 +81,9 @@ Only a user that has the _is_staff_ attribute as true can List, Get, Create, Edi
     "first_name": <str>,
     "last_name": <str>,
     "email": <str>,
-    "is_staff": <bool>
+    "is_staff": <bool>,
+    "is_active": <bool>,
+    "password": <str> (WRITE ONLY)
 }
 ```
 ### Endpoint: /rest/users/
@@ -100,12 +104,15 @@ To list all users, you can make a **GET** request to the _/rest/users/_ endpoint
 #### Create User (POST)
 To create a user, you can make a **POST** request to the _/rest/users/_ endpoint with the following data:
 
+**Required**
 * username=[any username]
+* password=[user's password]
+**Optional**
 * first_name=[user's name]
 * last_name=[user's surname]
 * email=[user's email]
 * is_staff=[true|false if admin]
-* password=[user's password]
+* is_active=[true|false if active]
 
 For example, with CURL:
 
@@ -140,16 +147,19 @@ To get a specific user, you can make a **GET** request to the _/rest/users/[USER
 #### Edit User (PUT)
 To edit all of a user's data, you can make a **PUT** request to the _/rest/users/[USER ID]/_ endpoint with the following data:
 
+**Required**
 * username=[any username]
+* password=[user's password]
+**Optional**
 * first_name=[user's name]
 * last_name=[user's surname]
 * email=[user's email]
 * is_staff=[true|false if admin]
-* password=[user's password]
+* is_active=[true|false if active]
 
 For example, with CURL:
 
->curl -X PUT -d '{"username":"user1", "first_name":"", "last_name":"", "email":"", "is_staff":false}' -H "Content-Type: application/json" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/users/[USER ID]/
+>curl -X PUT -d '{"username":"user1", "first_name":"", "last_name":"", "email":"", "is_staff":false, "password":"12345"}' -H "Content-Type: application/json" -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/users/[USER ID]/
 
 **Possible Outputs**
 
@@ -170,6 +180,7 @@ To update one or more attributes from a user, you can make a **PATCH** request t
 * last_name=[user's surname]
 * email=[user's email]
 * is_staff=[true|false if admin]
+* is_active=[true|false if active]
 * password=[user's password]
 
 For example, with CURL:
@@ -188,7 +199,7 @@ For example, with CURL:
 
 
 #### Delete User (DELETE)
-To delete a user, you can make a **DELETE** request to the _/rest/users/[USER ID]/_ endpoint, in CURL:
+To soft delete (deactivate) a user, you can make a **DELETE** request to the _/rest/users/[USER ID]/_ endpoint, in CURL:
 
 >curl -X DELETE -H "Authorization: Bearer [ACCESS TOKEN]" http://[host]:[port]/rest/users/[USER ID]/
 
@@ -196,10 +207,10 @@ To delete a user, you can make a **DELETE** request to the _/rest/users/[USER ID
 
 | Status Code   | Response Content| Description   |
 | ------------- | -------------   | ------------- |
-|     204       | None | Successful call, User deleted.
+|     204       | None | Successful call, User deactivated.
 |     401       | JSON object: <br>{"detail":"Authentication credentials were not provided."} | Invalid or no token provided.
 |     403       | JSON object: <br>{"detail":"You do not have permission to perform this action."} | Current user has no permission to access this resource.
-|     404       | JSON object: <br>{"detail":"Not found."} | User ID not found
+|     404       | JSON object: <br>{"detail":"Not found."} | User ID not found or already deactivated.
 
 
 ### Customer Management
