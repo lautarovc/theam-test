@@ -104,10 +104,10 @@ To list all users, you can make a **GET** request to the _/rest/users/_ endpoint
 #### Create User (POST)
 To create a user, you can make a **POST** request to the _/rest/users/_ endpoint with the following data:
 
-**Required**
+* **Required**
 * username=[any username]
 * password=[user's password]
-**Optional**
+* **Optional**
 * first_name=[user's name]
 * last_name=[user's surname]
 * email=[user's email]
@@ -147,10 +147,10 @@ To get a specific user, you can make a **GET** request to the _/rest/users/[USER
 #### Edit User (PUT)
 To edit all of a user's data, you can make a **PUT** request to the _/rest/users/[USER ID]/_ endpoint with the following data:
 
-**Required**
+* **Required**
 * username=[any username]
 * password=[user's password]
-**Optional**
+* **Optional**
 * first_name=[user's name]
 * last_name=[user's surname]
 * email=[user's email]
@@ -245,11 +245,11 @@ To list all customers, you can make a **GET** request to the _/rest/customers/_ 
 #### Create Customers (POST)
 To create a customer, you can make a **POST** request to the _/rest/customers/_ endpoint with the following data:
 
-**Required**
+* **Required**
 * id=[customer's id]
 * name=[customer's name]
-* surname=[customer's surname]
-**Optional**
+* surname=[customer's surname]</br>
+* **Optional**
 * photo=@[URL/Path to photo]
 
 For example, with CURL:
@@ -286,11 +286,11 @@ To get a specific customer, you can make a **GET** request to the _/rest/custome
 #### Edit Customer (PUT)
 To edit all of a customer's data, you can make a **PUT** request to the _/rest/customers/[CUSTOMER ID]/_ endpoint with the following data:
 
-**Required**
+* **Required**
 * id=[customer's id]
 * name=[customer's name]
 * surname=[customer's surname]
-**Optional (note that if it's not included, it will be replaced by null**
+* **Optional (note that if it's not included, it will be replaced by null**
 * photo=@[URL/Path to photo]
 
 For example, with CURL:
