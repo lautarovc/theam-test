@@ -35,6 +35,8 @@ The following Environment Variables need to be defined:
     >python3 manage.py createsuperuser
 * Run the server on the default address and port (127.0.0.1:8000):
     >python3 manage.py runserver
+* If you get a server error while entering an admin site, run:
+    >python3 manage.py collectstatic
 
 # API Endpoints
 ## Getting the Client Id and Client Secret key
