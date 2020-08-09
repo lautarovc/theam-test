@@ -11,11 +11,15 @@ from rest_framework.test import APITestCase
 cId = TEST_INFO.get("cId")
 cS = TEST_INFO.get("cS")
 
+adminId = str(TEST_INFO.get("adminId"))
 adminUser = TEST_INFO.get("adminUser")
 adminPass = TEST_INFO.get("adminPass")
 
+normalId = str(TEST_INFO.get("normalId"))
 normalUser = TEST_INFO.get("normalUser")
 normalPass = TEST_INFO.get("normalPass")
+
+customerId = TEST_INFO.get("customerId")
 
 URL = TEST_INFO.get("URL")
 

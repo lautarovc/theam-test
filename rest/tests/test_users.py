@@ -12,11 +12,15 @@ from rest_framework.test import APITestCase
 cId = TEST_INFO.get("cId")
 cS = TEST_INFO.get("cS")
 
+adminId = str(TEST_INFO.get("adminId"))
 adminUser = TEST_INFO.get("adminUser")
 adminPass = TEST_INFO.get("adminPass")
 
+normalId = str(TEST_INFO.get("normalId"))
 normalUser = TEST_INFO.get("normalUser")
 normalPass = TEST_INFO.get("normalPass")
+
+customerId = TEST_INFO.get("customerId")
 
 URL = TEST_INFO.get("URL")
 
@@ -78,7 +82,9 @@ class UsersTest(APITestCase):
 
 		response = requests.post(url, data=data, headers=headers)
 
-		self.assertEqual(response.status_code,201)
+		# Check permissions
+		self.assertNotEqual(response.status_code,401)
+		self.assertNotEqual(response.status_code,403)
 
 		# Delete the created user
 		newId = json.loads(response.content)["id"]
@@ -90,7 +96,7 @@ class UsersTest(APITestCase):
 
 	def testGetUser(self):
 
-		url = URL+"/rest/users/2/"
+		url = URL+"/rest/users/"+normalId+"/"
 		headers = {'Content-Type':'application/json', 'Authorization': 'Bearer '+self.adminToken}
 
 		response = requests.get(url, headers=headers)
@@ -99,7 +105,7 @@ class UsersTest(APITestCase):
 
 	def testUpdateUserToAdmin(self):
 
-		url = URL+"/rest/users/2/"
+		url = URL+"/rest/users/"+normalId+"/"
 		headers = {'Content-Type':'application/json', 'Authorization': 'Bearer '+self.adminToken}
 		data = json.dumps({"is_staff":True})
 
@@ -113,14 +119,14 @@ class UsersTest(APITestCase):
 		self.assertEqual(response.status_code,200)
 
 		# Reverse update
-		url = URL+"/rest/users/2/"
+		url = URL+"/rest/users/"+normalId+"/"
 		data = json.dumps({"is_staff":False})
 		response = requests.patch(url, data=data, headers=headers)
 		self.assertEqual(response.status_code,200)
 
 	def testEditUser(self):
 
-		url = URL+"/rest/users/2/"
+		url = URL+"/rest/users/"+normalId+"/"
 		headers = {'Content-Type':'application/json', 'Authorization': 'Bearer '+self.adminToken}
 		data = json.dumps({"username":"user1", "first_name":"user1", "last_name":"user1", "email":"", "is_staff":False, "password":"12345"})
 
