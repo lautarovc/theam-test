@@ -82,12 +82,8 @@ WSGI_APPLICATION = 'theamTest.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'theam-test',
-        'USER': 'theam-test',
-        'PASSWORD': os.environ.get('DB_PASSWORD',''),
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
