@@ -13,11 +13,15 @@ from rest_framework.test import APITestCase
 cId = TEST_INFO.get("cId")
 cS = TEST_INFO.get("cS")
 
+adminId = str(TEST_INFO.get("adminId"))
 adminUser = TEST_INFO.get("adminUser")
 adminPass = TEST_INFO.get("adminPass")
 
+normalId = str(TEST_INFO.get("normalId"))
 normalUser = TEST_INFO.get("normalUser")
 normalPass = TEST_INFO.get("normalPass")
+
+customerId = TEST_INFO.get("customerId")
 
 URL = TEST_INFO.get("URL")
 
@@ -106,7 +110,7 @@ class CustomersTest(APITestCase):
 
 	def testGetCustomer(self):
 
-		url = URL+"/rest/customers/12345/"
+		url = URL+"/rest/customers/"+customerId+"/"
 		headers = {'Content-Type':'application/json', 'Authorization': 'Bearer '+self.userToken}
 
 		response = requests.get(url, headers=headers)
@@ -116,12 +120,12 @@ class CustomersTest(APITestCase):
 	def testUpdateCustomer(self):
 
 		# Upload photo, Content-Type deleted to allow requests can create the corresponding boundaries
-		url = URL+"/rest/customers/12345/"
+		url = URL+"/rest/customers/"+customerId+"/"
 		headers = {'Authorization': 'Bearer '+self.userToken}
 		data = {'photo': open('rest/tests/test.png', 'rb')}
 
 		response = requests.patch(url, files=data, headers=headers)
-		
+
 		photoUrl = json.loads(response.content)["photo"]
 		print("PHOTO URL: " + photoUrl)
 
@@ -129,10 +133,53 @@ class CustomersTest(APITestCase):
 
 	def testEditCustomer(self):
 
-		url = URL+"/rest/customers/12345/"
+		url = URL+"/rest/customers/"+customerId+"/"
 		headers = {'Content-Type':'application/json', 'Authorization': 'Bearer '+self.userToken}
-		data = json.dumps({"id":"12345", "name":"name2", "surname":"name2"})
+		data = json.dumps({"id":customerId, "name":"name2", "surname":"name2"})
 
 		response = requests.put(url, data=data, headers=headers)
 
 		self.assertEqual(response.status_code,200)
+
+	def testCreateCustomerDeleteUser(self):
+		# Upload data and photo
+		url = URL+"/rest/customers/"
+		headers = {'Authorization': 'Bearer '+self.userToken}
+		data = {"id":"1234567", "name":"name1", "surname":"name1"}
+		photo = {'photo': open('rest/tests/test.png', 'rb')}
+
+		response = requests.post(url, data=data, files=photo, headers=headers)
+
+		self.assertEqual(response.status_code,201)
+
+		# Delete user
+		url = URL+"/rest/users/"+normalId+"/"
+		headers = {'Authorization': 'Bearer '+self.adminToken}
+		response = requests.delete(url, headers=headers)
+		self.assertEqual(response.status_code, 204)
+
+		# Get created customer, assert attributes
+		url = URL+"/rest/customers/1234567/"
+		response = requests.get(url, headers=headers)
+
+		content = json.loads(response.content)
+		lastUpdatedBy = content["lastUpdatedBy"]
+		createdBy = content["createdBy"]
+
+		self.assertEqual(int(normalId), lastUpdatedBy)
+		self.assertEqual(int(normalId), createdBy)
+
+		# Reactivate again
+		url = URL+"/rest/users/"+normalId+"/"
+		headers = {'Content-Type':'application/json', 'Authorization': 'Bearer '+self.adminToken}
+		data = json.dumps({"is_active":True})
+
+		response = requests.patch(url, data=data, headers=headers)
+
+		self.assertEqual(response.status_code,200)
+
+		# Delete the created customer
+		url = URL+"/rest/customers/1234567/"
+		response = requests.delete(url, headers=headers)
+
+		self.assertEqual(response.status_code, 204)

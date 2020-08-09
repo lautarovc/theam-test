@@ -15,10 +15,13 @@ The following Environment Variables need to be defined:
 {
     "cId": Client Id Key,
     "cS": Client Secret Key,
+    "adminId": Admin Id,
     "adminUser": Admin username,
     "adminPass": Admin password,
+    "normalId": Normal User Id,
     "normalUser": Normal User username,
     "normalPass": Normal User password,
+    "customerId": Test customer Id,
     "URL": URL of your deployed app
 }
 ```
@@ -115,6 +118,8 @@ To create a user, you can make a **POST** request to the _/rest/users/_ endpoint
 * email=[user's email]
 * is_staff=[true|false if admin]
 * is_active=[true|false if active]
+
+**Note:** If the user has been deleted (deactivated) previously you must activate it by updating the is_active attribute in the Update/Edit endpoints. It will throw a field error if you try to re-create it.
 
 For example, with CURL:
 
@@ -352,3 +357,11 @@ To delete a customer, you can make a **DELETE** request to the _/rest/customers/
 |     401       | JSON object: <br>{"detail":"Authentication credentials were not provided."} | Invalid or no token provided.
 |     404       | JSON object: <br>{"detail":"Not found."} | Customer ID not found
 
+
+# Tests
+Tests are found in the rest/tests folder. You can add/edit any tests as you wish, tests are done against a deployed server because of Django OAuth Toolkit limitations with direct testing to views.
+
+Make sure you have a test admin, normal user and customer in your app and added the TEST_INFO variable to your environment.
+
+To run tests, run:
+    >python3 manage.py test
