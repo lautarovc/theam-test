@@ -163,5 +163,7 @@ GOOGLE_DRIVE_STORAGE_MEDIA_ROOT = 'media'
 # Test Information
 TEST_INFO = json.loads(os.environ.get('TEST_INFO','{}'))
 
+APPEND_SLASH = False
+
 # Activate Django-Heroku.
 django_heroku.settings(locals())
